@@ -29,6 +29,7 @@
     self.tableView.delegate = self;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tableView.hidden = YES;
+    [self.view addSubview:self.tableView];
     
     // Setting Up Activity Indicator View
     self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -71,11 +72,20 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     static NSString *cellID = @"Cell Identifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
     }
+    
+    NSDictionary *movie = [self.movies objectAtIndex:indexPath.row];
+    cell.textLabel.text = [movie objectForKey:@"trackName"];
+    cell.detailTextLabel.text = [movie objectForKey:@"artistName"];
+    
+    NSURL *url = [[NSURL alloc] initWithString:[movie objectForKey:@"artworkUrl100"]];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    cell.imageView.image = [[UIImage alloc] initWithData:data];
     
     return cell;
 }
